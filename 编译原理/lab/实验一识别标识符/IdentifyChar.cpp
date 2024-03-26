@@ -10,6 +10,7 @@ using namespace std;
 // 函数原型
 bool isIdentifierChar(char ch);
 string toLower(const string &s);
+bool isKeyWord(const string &s);
 
 int main() {
     ifstream sourceFile("source.txt");
@@ -30,8 +31,12 @@ int main() {
             while (sourceFile.get(ch) && isIdentifierChar(ch)) {
                 token += ch;
             }
-            // 将标识符转换为小写并计数
-            identifierCount[toLower(token)]++;
+            // 将标识符转换为小写
+            token = toLower(token);
+            // 如果不是关键字，则计数
+            if (!isKeyWord(token)) {
+                identifierCount[token]++;
+            }
             // 如果不是标识符字符，则跳过
             if (!isIdentifierChar(ch)) {
                 continue;
@@ -73,4 +78,10 @@ string toLower(const string &s) {
     string result;
     transform(s.begin(), s.end(), back_inserter(result), ::tolower);
     return result;
+}
+
+bool isKeyWord(const string &s) {
+    static const vector<string> keyWords = {"begin", "end", "if", "then", 
+    "while", "do", "call", "const", "var", "procedure", "read", "write"};
+    return find(keyWords.begin(), keyWords.end(), s) != keyWords.end();
 }
